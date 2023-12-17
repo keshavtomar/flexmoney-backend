@@ -1,30 +1,89 @@
-const { Client } = require('pg');
+require("dotenv").config();
 
-// Connection details for CockroachDB
-const connectionConfig = {
-  user: 'your_username',
-  host: 'your_host',
-  database: 'your_database',
-  password: 'your_password',
-  port: 26257, // CockroachDB default port
-  ssl: {
-    rejectUnauthorized: false, // For insecure connection, adjust in production
-  },
+const { Client, Pool } = require("pg");
+//Pool allows to establish connection without reestablish it on every request which reduces our cost and resources of cockroachDB
+const { parse } = require("pg-connection-string");
+const { errors } = require("pg-promise");
+
+const connectionString = process.env.connectionstring;
+
+const connect = () => {
+  console.log(connectionString);
+  const client = new Client({
+    connectionString: connectionString,
+    ssl: {
+      rejectUnauthorized: false, // For insecure connection, adjust in production
+    },
+  });
+
+  // Connect to the database
+  client
+    .connect()
+    .then(async () => {
+      console.log("Connected to CockroachDB");
+
+      // Query to create the users table
+      const createTableUsers = `
+        CREATE TABLE IF NOT EXISTS users (
+          user_id SERIAL PRIMARY KEY,
+          username VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL,
+          password VARCHAR(255) NOT NULL,
+          age INT,
+          enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+
+      const createTableClasses = `
+        CREATE TABLE IF NOT EXISTS classes (
+            class_id SERIAL PRIMARY KEY,
+            batch VARCHAR(20) NOT NULL
+        );
+        `;
+
+      const createTablePayments = `
+      CREATE TABLE IF NOT EXISTS payments (
+        payment_id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(user_id),
+        class_id INT REFERENCES classes(class_id),
+        amount INT NOT NULL,
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        `;
+
+      const paymentindex = `CREATE INDEX IF NOT EXISTS idx_user_id ON payments (user_id);`;
+
+      await client.query(createTableUsers).then(() => {
+        console.log("Table created successfully");
+      }).catch((errors)=>{
+        console.log("Error:"+errors);
+      })
+
+      await client.query(createTableClasses).then(()=>{
+        console.log("Classes table created successfully");
+      }).catch((errors)=>{
+        console.log("Error here : "+errors);
+      })
+
+      await client.query(createTablePayments).then(()=>{
+        console.log("Payments table created successfully");
+      }).catch((errors)=>{
+        console.log("error: "+errors);
+      })
+
+      await client.query(paymentindex).then(()=>{
+        console.log("Indexing on Payments table for user_id is done");
+      }).catch((error)=>{
+        console.log(error);
+      })
+
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    })
+    .finally(() => {
+      client.end();
+    });
 };
 
-// Create a new client
-const client = new Client(connectionConfig);
-
-// Connect to the database
-client.connect()
-  .then(() => {
-    console.log('Connected to CockroachDB');
-    // You can perform database operations here
-  })
-  .catch(error => {
-    console.error('Error connecting to CockroachDB:', error);
-  })
-  .finally(() => {
-    // Close the connection when done
-    client.end();
-  });
+module.exports = connect;
