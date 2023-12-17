@@ -21,6 +21,10 @@ app.use(function (req, res, next) {
 app.use(express.json());
 
 
+app.use('/api', require('./Routes/CreateUser'));
+// app.use('/api', require('./Routes/DisplayData'));
+// app.use('/api', require('./Routes/OrderData'));
+
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

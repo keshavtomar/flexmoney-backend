@@ -62,7 +62,7 @@ const connect = () => {
       await client.query(createTableClasses).then(()=>{
         console.log("Classes table created successfully");
       }).catch((errors)=>{
-        console.log("Error here : "+errors);
+        console.log("Error : "+errors);
       })
 
       await client.query(createTablePayments).then(()=>{
@@ -73,7 +73,7 @@ const connect = () => {
 
       await client.query(paymentindex).then(()=>{
         console.log("Indexing on Payments table for user_id is done");
-      }).catch((error)=>{
+      }).then((error)=>{
         console.log(error);
       })
 
