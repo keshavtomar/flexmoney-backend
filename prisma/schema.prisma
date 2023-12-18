@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id         Int       @id @default(sequence())
+  username        String
+  email           String    @unique
+  password        String
+  age             Int?
+  enrollment_date DateTime  @default(now())
+  Payment         Payment[]
+}
+
+model Class {
+  class_id Int       @id @default(sequence())
+  batch    String
+  payments Payment[]
+}
+
+model Payment {
+  payment_id   Int       @id @default(sequence())
+  user_id      Int?
+  class_id     Int?
+  amount       Int
+  payment_date DateTime? @default(now())
+  user         User?     @relation(fields: [user_id], references: [user_id])
+  class        Class?    @relation(fields: [class_id], references: [class_id])
+
+  @@index([user_id], name: "idx_user_id")
+}
