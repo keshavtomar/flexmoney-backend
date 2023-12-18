@@ -7,16 +7,22 @@ const { errors } = require("pg-promise");
 
 const connectionString = process.env.connectionstring;
 
-const connect = () => {
+const connect = async() => {
   console.log(connectionString);
-  const client = new Client({
+  const client = await new Client({
     connectionString: connectionString,
     ssl: {
       rejectUnauthorized: false, // For insecure connection, adjust in production
     },
   });
 
+
   // Connect to the database
+
+  // const instance = client.connect();
+
+  // console.log(instance);
+
   client
     .connect()
     .then(async () => {
@@ -73,8 +79,6 @@ const connect = () => {
 
       await client.query(paymentindex).then(()=>{
         console.log("Indexing on Payments table for user_id is done");
-      }).then((error)=>{
-        console.log(error);
       })
 
     })

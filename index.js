@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const database = require("./db");
 const cors = require('cors');
+
 database();
 
 app.get("/", (req, res) => {
