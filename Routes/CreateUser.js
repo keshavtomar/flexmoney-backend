@@ -23,12 +23,12 @@ router.post("/createuser", async (req, res) => {
 
     // If the user does not exist, create a new user
     const enrollment_date = new Date();
-    const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
         username: name,
         email,
-        password: hashedPassword, // Note: Hash the password before saving in a real application
+        password: hashedPassword, 
         age: parseInt(age),
         enrollment_date,
       },
