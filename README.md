@@ -1,6 +1,6 @@
 **Documentation**<br/>
 `index.js` is the main entry point of the server-side application. It sets up the Express server, configures middleware, and defines the routes for the application<br/>
-The frontend repository is at the link https://github.com/keshavtomar/flexmoney  <br/>     
+The frontend repository is at the link https://github.com/keshavtomar/flexmoney where How to run it on local machine is explained very well  <br/>     
 __imports__  
 `cockraochDB`  `prisma` are used <br/>
 Use  `git clone <url>` to clone this repository  
