@@ -1,6 +1,7 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const { userInfo } = require('os');
+const { log } = require('console');
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -11,6 +12,7 @@ router.post('/userstatus', async (req, res) => {
     const { user_id } = req.body;
     const find = parseInt(user_id);
 
+    // console.log("here we go");
     // Check if the user with the provided email exists
     const user = await prisma.payment.findMany({
       where: { user_id:find },
@@ -20,7 +22,7 @@ router.post('/userstatus', async (req, res) => {
       return res.json({ paid:false });
     }
     else{
-        res.json({paid:true});
+        res.json({paid:true, payments:user});
     }
   } catch (error) {
     console.error('Error during login:', error);

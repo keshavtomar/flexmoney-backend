@@ -3,7 +3,7 @@ const app = express()
 // const database = require("./db");
 const cors = require('cors');
 const usertable = require('./tables/user');
-usertable();
+// usertable();
 
 // database();
 
@@ -28,7 +28,7 @@ app.use('/api', require('./Routes/CreateUser'));
 app.use('/api', require('./Routes/LoginUser'));
 app.use('/api', require('./Routes/UserStatus'));
 app.use('/api', require('./Routes/EnrollUser'));
-// app.use('/api', require('./Routes/OrderData'));
+app.use('/api', require('./Routes/checkPayment'));
 
 
 const port = process.env.PORT || 4000;

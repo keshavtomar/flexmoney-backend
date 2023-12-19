@@ -2,7 +2,7 @@ const {PrismaClient} = require("@prisma/client");
 const client = new PrismaClient();
 
 const usertable=async()=>{
-    const classes = await client.user.findMany();
+    const classes = await client.payment.findMany();
     console.log(classes);
 }
 
