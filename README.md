@@ -10,6 +10,13 @@ To get the connection string write an email on `tomarkeshavofficial@gmail.com`
 
 
 
+__Tables__  
+There are three tables mainly `user` `payment` and `batch`, data redundancy is been taken careof    
+SCHEMA  
+<img width="596" alt="image" src="https://github.com/keshavtomar/flexmoney-backend/assets/100251921/7669e47e-62ac-43d8-b09f-274c5b01870b">
+
+
+
 __Routes__  
 `/CreateUser` and `/LoginUser` routes are handling the registration and login  
 `/enrollUser` route is handling the batch enrollment of the user after login  
@@ -19,6 +26,11 @@ __Routes__
 
 __Age Calculation__  
 During the registration Date of Birth is being stored for every user and at the time of enrollment to a batch, age is being verified
+
+
+__Checking the database tables__  
+After running this server on backend, check the database tables in console, by running the function `usertable()` for users table  
+similarly import the functions from `'./tables/class'` and `./tables/payment` and run them 
 
 
 
