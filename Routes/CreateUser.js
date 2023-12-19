@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 const router = express.Router();
+const validator = require('validator');
 
 router.post("/createuser", async (req, res) => {
   try {
@@ -21,6 +22,20 @@ router.post("/createuser", async (req, res) => {
         .json({ status: false, error: "User already exists" });
     }
 
+    const passwordOptions = {
+      minLength: 6,       // Minimum length
+    };
+
+    if (!validator.isStrongPassword(password, passwordOptions)) {
+      // Strong password
+      res.status(601).json({ isStrong: false });
+    }
+
+    if(!validator.isEmail(email)){
+      res.status(602).json({ isEmail: false });
+    }
+
+  
     // If the user does not exist, create a new user
     const enrollment_date = new Date();
     const hashedPassword = await bcrypt.hash(password, 10);

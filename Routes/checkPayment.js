@@ -34,8 +34,6 @@ router.post('/checkpayment', async (req, res) => {
         return res.json({success:true, paid: false});
     }
 
-    console.log(existingPayment);
-
     const x = new Date(
         month === 12
           ? `${year + 1}-01-01T00:00:00Z`
