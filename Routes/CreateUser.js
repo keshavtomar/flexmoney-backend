@@ -4,12 +4,19 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 const router = express.Router();
 const validator = require('validator');
+const { DateTime } = require("luxon");
 
 router.post("/createuser", async (req, res) => {
   try {
     // Assuming request body contains user data (e.g., username, email, password)
     const { name, email, password, age } = req.body;
 
+    const dateTimeDOB = DateTime.fromISO(age);
+
+    // Calculate the age
+    const calage = DateTime.now().diff(dateTimeDOB, 'years').years;
+    console.log(calage);
+  
     // Check if the user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -26,13 +33,8 @@ router.post("/createuser", async (req, res) => {
       minLength: 6,       // Minimum length
     };
 
-    if (!validator.isStrongPassword(password, passwordOptions)) {
-      // Strong password
-      res.status(601).json({ isStrong: false });
-    }
-
     if(!validator.isEmail(email)){
-      res.status(602).json({ isEmail: false });
+      return res.status(602).json({ isEmail: false });
     }
 
   
@@ -44,13 +46,13 @@ router.post("/createuser", async (req, res) => {
         username: name,
         email,
         password: hashedPassword, 
-        age: parseInt(age),
+        dateOfBirth: dateTimeDOB,
         enrollment_date,
       },
     });
 
-    // console.log(newUser);
-    res.status(201).json(newUser);
+    console.log(newUser);
+    res.status(201).json({ status: true, message: "User created" });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
